@@ -3,6 +3,14 @@ from datetime import date
 import xml.etree.ElementTree as ET
 import os
 
+aplicacoes = []  # Lista vazia para armazenar as aplicações
+
+def adicionar_aplicacao():
+    aplicacao = entry_aplicacao.get()  # Obtém o texto do campo de entrada
+    if aplicacao:
+        aplicacoes.append(aplicacao)  # Adiciona a aplicação à lista
+        entry_aplicacao.delete(0, tk.END)  # Limpa o campo de entrada
+
 def gerar_xml():
     desenvolvedor = entry_desenvolvedor.get() or "desenvolvedor"  # Obtém o texto do campo de entrada ou define como "desenvolvedor" se estiver vazio
     hoje = date.today().strftime("%Y-%m-%d")
@@ -11,8 +19,13 @@ def gerar_xml():
     raiz = ET.Element("root")
     comentario = ET.Comment(" {}".format(desenvolvedor))
     raiz.append(comentario)
+    
     data = ET.SubElement(raiz, "data")
     data.text = hoje
+    
+    # Cria a tag <Aplicacoes> e insere a lista de aplicações separadas por vírgula
+    aplicacoes_tag = ET.SubElement(raiz, "Aplicacoes")
+    aplicacoes_tag.text = ",".join(aplicacoes)
     
     # Cria o objeto ElementTree
     tree = ET.ElementTree(raiz)
@@ -64,6 +77,15 @@ lbl_desenvolvedor.pack()
 
 entry_desenvolvedor = tk.Entry(janela)
 entry_desenvolvedor.pack()
+
+lbl_aplicacao = tk.Label(janela, text="Aplicação:")
+lbl_aplicacao.pack()
+
+entry_aplicacao = tk.Entry(janela)
+entry_aplicacao.pack()
+
+btn_adicionar = tk.Button(janela, text="Adicionar Aplicação", command=adicionar_aplicacao)
+btn_adicionar.pack()
 
 btn_ok = tk.Button(janela, text="OK", command=gerar_xml)
 btn_ok.pack()
