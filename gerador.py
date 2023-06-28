@@ -8,7 +8,7 @@ aplicacoes = []  # Lista vazia para armazenar as aplicações
 def adicionar_aplicacao():
     aplicacao = entry_aplicacao.get()  # Obtém o texto do campo de entrada
     if aplicacao:
-        aplicacoes.append(aplicacao)  # Adiciona a aplicação à lista
+        aplicacoes.append(aplicacao.upper())  # Adiciona a aplicação à lista em letras maiúsculas
         entry_aplicacao.delete(0, tk.END)  # Limpa o campo de entrada
 
 def gerar_xml():
@@ -16,22 +16,22 @@ def gerar_xml():
     hoje = date.today().strftime("%Y-%m-%d")
     
     # Criação dos elementos XML
-    raiz = ET.Element("root")
-    comentario = ET.Comment(" {}".format(desenvolvedor))
-    raiz.append(comentario)
+    configuracoes = ET.Element("Configuracoes")
     
-    data = ET.SubElement(raiz, "data")
+    comentario = ET.Comment(" {}".format(desenvolvedor))
+    configuracoes.append(comentario)
+    
+    data = ET.SubElement(configuracoes, "data")
     data.text = hoje
     
-    # Cria a tag <Aplicacoes> e insere a lista de aplicações separadas por vírgula
-    aplicacoes_tag = ET.SubElement(raiz, "Aplicacoes")
+    aplicacoes_tag = ET.SubElement(configuracoes, "Aplicacoes")
     aplicacoes_tag.text = ",".join(aplicacoes)
     
     # Cria o objeto ElementTree
-    tree = ET.ElementTree(raiz)
+    tree = ET.ElementTree(configuracoes)
     
     # Gera a string XML
-    xml_string = '<?xml version="1.0" encoding="utf-8"?>\n' + ET.tostring(raiz, encoding="utf-8").decode()
+    xml_string = '<?xml version="1.0" encoding="utf-8"?>\n' + ET.tostring(configuracoes, encoding="utf-8").decode()
     
     # Obtém o diretório atual onde o script está sendo executado
     diretorio_atual = os.getcwd()
